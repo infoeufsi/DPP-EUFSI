@@ -7,6 +7,17 @@
             "ES2022",
             "DOM"
         ],
+        "typeRoots": [
+            "./node_modules/@types"
+        ],
+        "types": [
+            "node",
+            "express",
+            "cors",
+            "jsonwebtoken",
+            "bcryptjs",
+            "qrcode"
+        ],
         "outDir": "./dist",
         "rootDir": "./src",
         "strict": true,
