@@ -1,6 +1,7 @@
 {
   "name": "eufsi-dpp-backend",
   "version": "1.0.0",
+  "type": "module",
   "description": "EUFSI DPP Tool - Backend API Server",
   "main": "dist/index.js",
   "scripts": {
