@@ -10,6 +10,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  SUPPLIER
+  ADMIN
+  REGULATOR
+}
+
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  password       String
+  name           String
+  role           Role     @default(SUPPLIER)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  operatorId     String?
+  operator       EconomicOperator? @relation(fields: [operatorId], references: [id])
+}
+
 model Product {
   id             String   @id @default(uuid())
   gtin           String   @unique
@@ -39,7 +58,8 @@ model EconomicOperator {
   phone          String
   createdAt      DateTime @default(now())
   
-  dpps           DigitalProductPassport[]
+  users           User[]
+  passports       DigitalProductPassport[]
 }
 
 model Batch {

@@ -1,0 +1,22 @@
+{
+    "common": {
+        "title": "Digital Product Passport",
+        "authentic": "AUTHENTIC",
+        "gtin": "GTIN",
+        "batch": "BATCH",
+        "returnHome": "Return Home",
+        "error": "Oops!",
+        "notFound": "We couldn't find the product information you're looking for."
+    },
+    "sections": {
+        "materials": "Materials & Origin",
+        "journey": "Product Journey",
+        "care": "Care Instructions",
+        "circularity": "Circular Economy"
+    },
+    "circularity": {
+        "score": "Score",
+        "designedFor": "This product is designed for {process}.",
+        "collection": "Collection Scheme"
+    }
+}

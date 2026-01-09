@@ -1,0 +1,22 @@
+{
+    "common": {
+        "title": "Digitaal Productpaspoort",
+        "authentic": "AUTHENTIEK",
+        "gtin": "GTIN",
+        "batch": "BATCH",
+        "returnHome": "Terug naar Home",
+        "error": "Oeps!",
+        "notFound": "We konden de productinformatie die u zoekt niet vinden."
+    },
+    "sections": {
+        "materials": "Materialen & Herkomst",
+        "journey": "Productreis",
+        "care": "Onderhoudsinstructies",
+        "circularity": "Circulaire Economie"
+    },
+    "circularity": {
+        "score": "Score",
+        "designedFor": "Dit product is ontworpen voor {process}.",
+        "collection": "Inzamelingsschema"
+    }
+}

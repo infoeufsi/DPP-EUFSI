@@ -1,0 +1,22 @@
+{
+    "common": {
+        "title": "Passeport Produit Numérique",
+        "authentic": "AUTHENTIQUE",
+        "gtin": "GTIN",
+        "batch": "LOT",
+        "returnHome": "Retour à l'accueil",
+        "error": "Oups !",
+        "notFound": "Nous n'avons pas pu trouver les informations sur le produit que vous recherchez."
+    },
+    "sections": {
+        "materials": "Matériaux et Origine",
+        "journey": "Parcours du Produit",
+        "care": "Instructions d'entretien",
+        "circularity": "Économie Circulaire"
+    },
+    "circularity": {
+        "score": "Score",
+        "designedFor": "Ce produit est conçu pour {process}.",
+        "collection": "Schéma de Collecte"
+    }
+}

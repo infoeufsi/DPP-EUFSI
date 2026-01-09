@@ -1,0 +1,22 @@
+{
+    "common": {
+        "title": "Digitaler Produktpass",
+        "authentic": "AUTHENTISCH",
+        "gtin": "GTIN",
+        "batch": "CHARGE",
+        "returnHome": "Zurück zur Startseite",
+        "error": "Hoppla!",
+        "notFound": "Wir konnten die von Ihnen gesuchten Produktinformationen nicht finden."
+    },
+    "sections": {
+        "materials": "Materialien & Herkunft",
+        "journey": "Produktreise",
+        "care": "Pflegehinweise",
+        "circularity": "Kreislaufwirtschaft"
+    },
+    "circularity": {
+        "score": "Punktzahl",
+        "designedFor": "Dieses Produkt ist für {process} konzipiert.",
+        "collection": "Sammelsystem"
+    }
+}
