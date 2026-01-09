@@ -7,6 +7,9 @@
             "ES2022",
             "DOM"
         ],
+        "typeRoots": [
+            "./node_modules/@types"
+        ],
         "outDir": "./dist",
         "rootDir": "./src",
         "strict": true,
