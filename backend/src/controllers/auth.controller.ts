@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { db } from '../lib/db.js';
+import { auditService } from '../lib/audit.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production';
@@ -37,6 +38,14 @@ export class AuthController {
         // Generate token
         const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
 
+        await auditService.log({
+            action: 'USER_REGISTER',
+            resourceType: 'User',
+            resourceId: user.id,
+            userId: user.id,
+            data: { email: user.email }
+        });
+
         res.status(201).json({
             message: 'User registered successfully',
             user: { id: user.id, email: user.email, name: user.name, role: user.role },
@@ -66,6 +75,13 @@ export class AuthController {
 
         // Generate token
         const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
+
+        await auditService.log({
+            action: 'USER_LOGIN',
+            resourceType: 'User',
+            resourceId: user.id,
+            userId: user.id
+        });
 
         res.json({
             message: 'Login successful',

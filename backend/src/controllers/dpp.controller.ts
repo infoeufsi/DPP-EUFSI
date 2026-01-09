@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import { dppService } from '../services/dpp.service.js';
+import { auditService } from '../lib/audit.js';
 
 /**
  * Get all DPPs (with pagination)
@@ -70,10 +71,18 @@ export const getDpp = asyncHandler(async (req: Request, res: Response) => {
  * POST /api/v1/dpp
  */
 export const createDpp = asyncHandler(async (req: Request, res: Response) => {
-    const newDpp = await dppService.create(req.body);
+    const dpp = await dppService.create(req.body);
+
+    await auditService.log({
+        action: 'DPP_CREATE',
+        resourceType: 'DigitalProductPassport',
+        resourceId: dpp.dppId,
+        userId: (req as any).user?.id,
+        data: { gtin: dpp.product.gtin, batch: dpp.product.batch }
+    });
 
     res.status(201).json({
         message: 'DPP created successfully',
-        data: newDpp
+        data: dpp
     });
 });
