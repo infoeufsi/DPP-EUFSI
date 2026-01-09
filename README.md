@@ -22,11 +22,13 @@ A comprehensive Digital Product Passport (DPP) system designed to meet EU ESPR r
 
 ## 📋 Features (MVP)
 
-- [ ] QR Code Resolver (scan → DPP page)
-- [ ] Consumer View (product journey, materials, care instructions)
-- [ ] Supplier Portal (batch data upload)
-- [ ] Admin Console (dashboards, analytics)
-- [ ] Tiered Access Control (public, B2B, B2G)
+- [x] QR Code Resolver (scan → DPP page)
+- [x] Consumer View (product journey, materials, care instructions)
+- [x] Supplier Portal (batch data upload)
+- [x] Admin Console (dashboards, analytics)
+- [x] Tiered Access Control (public, B2B, B2G)
+- [x] EU ESPR Completeness Engine (compliance scoring)
+- [x] Audit Logging & Security Hardening
 
 ## 🚀 Getting Started
 
