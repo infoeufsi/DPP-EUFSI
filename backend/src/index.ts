@@ -12,6 +12,7 @@ import dppRoutes from './routes/dpp.routes.js';
 import resolverRoutes from './routes/resolver.routes.js';
 import qrRoutes from './routes/qr.routes.js';
 import authRoutes from './routes/auth.routes.js';
+import adminRoutes from './routes/admin.routes.js';
 
 // Import database
 import { db } from './lib/db.js';
@@ -42,6 +43,7 @@ app.use('/api/health', healthRoutes);
 app.use('/api/v1/dpp', dppRoutes);
 app.use('/api/v1/qr', qrRoutes);
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/admin', adminRoutes);
 app.use('/resolve', resolverRoutes);
 
 // Error handling
