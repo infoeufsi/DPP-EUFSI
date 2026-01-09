@@ -1,51 +1,48 @@
-# Deployment Guide - EUFSI DPP Tool
+# Deployment Guide - EUFSI DPP Tool (Unified Render Strategy)
 
-This guide covers the production deployment of the EUFSI Digital Product Passport tool.
+This guide covers the production deployment of the EUFSI Digital Product Passport tool using **Render Blueprint**, which automates the setup of the entire stack.
 
 ## 🏗️ Architecture
-- **Frontend**: Next.js (Vercel/Amis/Static hosting)
-- **Backend**: Node.js/Express (Render/Heroku/Railway/AWS ECS)
-- **Database**: PostgreSQL (Prisma)
+- **Infrastructure Provider**: Render (Unified Platform)
+- **Frontend**: Next.js (Web Service)
+- **Backend**: Node.js/Express (Web Service)
+- **Database**: PostgreSQL (Managed Instance)
 - **Storage**: AWS S3 (for certificates and evidence)
 
-## 🔑 Environment Variables
-You must configure the following in your production environment:
+## � One-Click Deployment (Recommended)
 
-### Backend (.env)
-- `PORT`: e.g., 3001
-- `DATABASE_URL`: PostgreSQL connection string
-- `JWT_SECRET`: Long random string for session safety
-- `FRONTEND_URL`: URL of the deployed frontend
-- `AWS_ACCESS_KEY_ID`: AWS credentials for S3
-- `AWS_SECRET_ACCESS_KEY`: AWS credentials for S3
-- `AWS_REGION`: e.g., eu-central-1
-- `AWS_S3_BUCKET_NAME`: e.g., eufsi-dpp-assets
+1.  Push your code to GitHub.
+2.  Log in to [Render](https://dashboard.render.com).
+3.  Click **"New +"** and select **"Blueprint"**.
+4.  Connect your repository. Render will automatically detect `render.yaml`.
+5.  Click **"Apply"**.
 
-### Frontend (.env.local)
-- `NEXT_PUBLIC_API_URL`: URL of the deployed backend
+Render will automatically provision the PostgreSQL database, the Backend API, and the Frontend service, linking them together securely.
 
-## 🚀 Deployment Steps
+## 🔑 Manual Configuration (If not using Blueprints)
 
-### 1. Database Setup
-Ensure your PostgreSQL instance is running and accessible.
+### Backend Service
+- **Build Command**: `cd backend && npm install && npm run build`
+- **Start Command**: `cd backend && npm start`
+- **Required Env**: `DATABASE_URL`, `JWT_SECRET`, `FRONTEND_URL`
+
+### Frontend Service
+- **Build Command**: `cd frontend && npm install && npm run build`
+- **Start Command**: `cd frontend && npm start`
+- **Required Env**: `NEXT_PUBLIC_API_URL` (Point to your Backend URL)
+
+### Database
+- **Type**: PostgreSQL
+- **Steps**: Create a new PostgreSQL instance on Render and copy the **Internal Database URL** to the Backend's `DATABASE_URL` env variable.
+
+## 🛡️ Security & Performance
+- **Private Networking**: By using Render for both, the Frontend and Backend communicate over Render's private network for increased speed and security.
+- **Auto-scaling**: Both services can be scaled horizontally if traffic increases.
+- **Audit Trails**: All system mutations are logged to the PostgreSQL database for regulatory compliance.
+
+## 📦 Post-Deployment
+Once deployed, run migrations to ensure your production database is up to date:
 ```bash
 cd backend
 npx prisma migrate deploy
 ```
-
-### 2. Backend Deployment
-Deploy the `backend` folder.
-- **Build Command**: `npm install && npm run build`
-- **Start Command**: `npm start`
-
-### 3. Frontend Deployment
-Deploy the `frontend` folder.
-- **Build Command**: `npm install && npm run build`
-- **Start Command**: `npm start` (or use static export if applicable)
-
-## 🛡️ Security Hardening Includes
-- **Helmet**: Secure HTTP headers
-- **CORS**: Strict origin checking
-- **Rate Limiting**: 100 requests per 15 min per IP
-- **Audit Logging**: Traceability of all writes and logins
-- **Zod**: Input validation for all DPP documents
