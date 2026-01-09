@@ -8,7 +8,12 @@
             "DOM"
         ],
         "types": [
-            "node"
+            "node",
+            "express",
+            "cors",
+            "jsonwebtoken",
+            "bcryptjs",
+            "qrcode"
         ],
         "outDir": "./dist",
         "rootDir": "./src",
