@@ -7,6 +7,14 @@
             "ES2022",
             "DOM"
         ],
+        "types": [
+            "node",
+            "express",
+            "cors",
+            "jsonwebtoken",
+            "bcryptjs",
+            "qrcode"
+        ],
         "outDir": "./dist",
         "rootDir": "./src",
         "strict": true,
