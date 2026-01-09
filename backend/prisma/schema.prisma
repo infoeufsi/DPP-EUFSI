@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id             String   @id @default(uuid())
+  gtin           String   @unique
+  sku            String   @unique
+  name           String
+  description    String
+  brand          String
+  category       String
+  size           String?
+  color          String?
+  image          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  batches        Batch[]
+  dpps           DigitalProductPassport[]
+}
+
+model EconomicOperator {
+  id             String   @id @default(uuid())
+  legalName      String
+  vatId          String   @unique
+  streetAddress  String
+  city           String
+  country        String
+  email          String
+  phone          String
+  createdAt      DateTime @default(now())
+  
+  dpps           DigitalProductPassport[]
+}
+
+model Batch {
+  id              String   @id @default(uuid())
+  lotNumber       String
+  productionDate  DateTime
+  createdAt       DateTime @default(now())
+  
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id])
+  
+  dpps            DigitalProductPassport[]
+  
+  @@unique([productId, lotNumber])
+}
+
+model DigitalProductPassport {
+  id                String   @id @default(uuid())
+  dppId             String   @unique // The formal DPP ID (e.g. DPP-GTIN-LOT)
+  version           String   @default("1.0")
+  data              Json     // The full JSON-LD document
+  accessControl     Json?    // Tiered visibility settings
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  productId         String
+  product           Product  @relation(fields: [productId], references: [id])
+  
+  batchId           String
+  batch             Batch    @relation(fields: [batchId], references: [id])
+  
+  operatorId        String
+  operator          EconomicOperator @relation(fields: [operatorId], references: [id])
+}
+
+model AuditLog {
+  id            String   @id @default(uuid())
+  action        String
+  resourceType  String
+  resourceId    String
+  userId        String?
+  data          Json?
+  timestamp     DateTime @default(now())
+}
