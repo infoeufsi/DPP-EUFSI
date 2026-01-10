@@ -36,6 +36,20 @@ export default async function DppPage({ params, searchParams }: DppPageProps) {
         error = err.message;
     }
 
+    // Fetch QR code
+    let qrData = null;
+    try {
+        const qrRes = await fetch(`${backendUrl}/api/v1/qr/generate/${gtin}?batch=${batch || ''}`, {
+            headers: { 'Accept': 'application/json' },
+            cache: 'no-store'
+        });
+        if (qrRes.ok) {
+            qrData = await qrRes.json();
+        }
+    } catch (e) {
+        console.error('Failed to fetch QR');
+    }
+
     if (error || !dppData) {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-50">
@@ -57,10 +71,7 @@ export default async function DppPage({ params, searchParams }: DppPageProps) {
                     <button className="p-2 -ml-2 text-slate-500">
                         <ArrowLeft className="w-5 h-5" />
                     </button>
-                    <div className="flex flex-col items-center">
-                        <span className="text-[10px] font-bold tracking-[0.2em] text-blue-600 uppercase">EUFSI DPP</span>
-                        <span className="text-sm font-medium">{dict.common.title}</span>
-                    </div>
+                    <Image src="/logo.png" alt="EUFSI" width={80} height={20} className="h-5 w-auto object-contain" />
                     <LanguageSwitcher currentLang={lang} />
                 </div>
             </header>
@@ -114,17 +125,17 @@ export default async function DppPage({ params, searchParams }: DppPageProps) {
                         <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 grid grid-cols-2 gap-4">
                             <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                                 <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Carbon Footprint</span>
-                                <span className="text-lg font-bold text-slate-900">{dppData.sustainability.carbonFootprint || '2.4 kg CO2e'}</span>
+                                <span className="text-lg font-bold text-slate-900">{dppData.sustainability.carbonFootprint || '2.1 kg CO2e'}</span>
                             </div>
                             <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                                 <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Water Usage</span>
-                                <span className="text-lg font-bold text-slate-900">{dppData.sustainability.waterUsage || '150 Liters'}</span>
+                                <span className="text-lg font-bold text-slate-900">{dppData.sustainability.waterUsage || '120 Liters'}</span>
                             </div>
                         </div>
                     </section>
                 )}
 
-                {/* Compliance & Chemicals */}
+                {/* Compliance & ESG */}
                 {dppData.compliance && (
                     <section>
                         <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
@@ -135,16 +146,16 @@ export default async function DppPage({ params, searchParams }: DppPageProps) {
                         </h2>
                         <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-3">
                             <div className="flex items-center justify-between p-3 bg-blue-50/30 rounded-xl border border-blue-100/50">
-                                <span className="text-sm font-semibold text-slate-700">EU ESPR Regulatory Status</span>
-                                <span className="px-2 py-0.5 bg-emerald-500 text-white text-[10px] font-bold rounded uppercase tracking-widest">{dppData.compliance.espr}</span>
+                                <span className="text-sm font-semibold text-slate-700">{dict.compliance.socialAudit}</span>
+                                <span className="px-2 py-0.5 bg-blue-600 text-white text-[9px] font-bold rounded uppercase tracking-widest">{dppData.compliance.socialAudit || 'SA8000 Certified'}</span>
+                            </div>
+                            <div className="flex items-center justify-between p-2 px-3">
+                                <span className="text-xs font-medium text-slate-500 italic px-4 border-l-2 border-slate-200">EU ESPR Regulatory Status</span>
+                                <span className="text-xs font-bold text-emerald-600">{dppData.compliance.espr}</span>
                             </div>
                             <div className="flex items-center justify-between p-2 px-3">
                                 <span className="text-xs font-medium text-slate-500 italic px-4 border-l-2 border-slate-200">REACH Chemicals Compliance</span>
                                 <span className="text-xs font-bold text-emerald-600">{dppData.compliance.reach}</span>
-                            </div>
-                            <div className="flex items-center justify-between p-2 px-3">
-                                <span className="text-xs font-medium text-slate-500 italic px-4 border-l-2 border-slate-200">OEKO-TEX Verification</span>
-                                <span className="text-xs font-bold text-blue-600 font-mono text-[10px]">{dppData.compliance.oeKO_TEX}</span>
                             </div>
                         </div>
                     </section>
@@ -168,6 +179,15 @@ export default async function DppPage({ params, searchParams }: DppPageProps) {
                                 <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
                                     <div className="h-full bg-amber-500 rounded-full" style={{ width: `${item.percentage}%` }}></div>
                                 </div>
+                                {item.certifications && (
+                                    <div className="flex gap-2 pt-1">
+                                        {item.certifications.map((cert: string) => (
+                                            <span key={cert} className="px-1.5 py-0.5 bg-amber-50 text-amber-700 text-[9px] font-bold rounded border border-amber-100 tracking-wider">
+                                                {cert}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -208,23 +228,58 @@ export default async function DppPage({ params, searchParams }: DppPageProps) {
                             {dict.sections.circularity}
                         </h2>
                         <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-xs font-bold bg-emerald-500 text-white">
-                            {dppData.endOfLife?.recyclability?.recyclabilityScore || '8'}/10
+                            {dppData.endOfLife?.recyclability?.recyclabilityScore || '9'}/10
                         </div>
                     </div>
                     <p className="text-slate-400 text-sm mb-4 relative z-10">
                         {dict.circularity.designedFor.replace('{process}', dppData.endOfLife?.recyclability?.process || 'Mechanical Recycling')}
                     </p>
+                    <div className="grid grid-cols-2 gap-3 mb-4 relative z-10">
+                        <div className="bg-white/5 p-3 rounded-xl border border-white/10">
+                            <span className="block text-[9px] font-bold text-emerald-400 uppercase tracking-widest mb-1">{dict.circularity.recycledContent}</span>
+                            <span className="text-lg font-bold text-white">{dppData.sustainability?.recycledContent || '5%'}</span>
+                        </div>
+                        <div className="bg-white/5 p-3 rounded-xl border border-white/10">
+                            <span className="block text-[9px] font-bold text-emerald-400 uppercase tracking-widest mb-1">Hazardous Sub.</span>
+                            <span className="text-[10px] font-bold text-white truncate">{dppData.sustainability?.hazardousSubstances || 'None'}</span>
+                        </div>
+                    </div>
                     <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10 relative z-10">
                         <span className="block text-[10px] font-bold uppercase mb-1 opacity-80 text-emerald-400 tracking-widest">{dict.circularity.collection}</span>
                         <p className="text-xs leading-relaxed text-slate-300 italic">{dppData.endOfLife?.collectionScheme?.instructions || 'Check local textile collection points.'}</p>
                     </div>
                 </section>
 
+                {/* Digital Identity & QR */}
+                <section className="text-center pt-8 border-t border-slate-200">
+                    <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6">{dict.sections.digitalIdentity}</h2>
+                    <div className="bg-white p-8 rounded-[40px] shadow-2xl shadow-blue-200 inline-block border border-slate-100">
+                        {qrData ? (
+                            <Image
+                                src={qrData.qrCode}
+                                alt="QR Digital Link"
+                                width={180}
+                                height={180}
+                                className="mx-auto"
+                            />
+                        ) : (
+                            <div className="w-[180px] h-[180px] bg-slate-50 flex items-center justify-center rounded-2xl italic text-slate-300 text-xs">
+                                Generating ID...
+                            </div>
+                        )}
+                        <div className="mt-6 space-y-1">
+                            <p className="text-[10px] font-bold text-blue-600 tracking-[0.2em] uppercase">GS1 Digital Link</p>
+                            <p className="text-[9px] text-slate-400 font-mono lowercase truncate max-w-[150px] mx-auto">
+                                {qrData?.url || 'https://eufsi.eu/resolve/...'}
+                            </p>
+                        </div>
+                    </div>
+                </section>
             </main>
 
             {/* Footer Branding */}
             <footer className="mt-12 text-center opacity-40">
-                <span className="text-[10px] font-bold tracking-[0.3em] uppercase">EUFSI DPP SYSTEM</span>
+                <span className="text-[10px] font-bold tracking-[0.3em] uppercase">EUFSI DPP SYSTEM v1.2</span>
             </footer>
         </div>
     );

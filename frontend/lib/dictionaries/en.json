@@ -13,12 +13,19 @@
         "journey": "Product Journey",
         "environmental": "Environmental Impact",
         "compliance": "Regulatory Compliance",
+        "esg": "ESG & Social Audit",
+        "digitalIdentity": "Digital Identity",
         "care": "Care Instructions",
         "circularity": "Circular Economy"
     },
     "circularity": {
         "score": "Score",
         "designedFor": "This product is designed for {process}.",
-        "collection": "Collection Scheme"
+        "collection": "Collection Scheme",
+        "recycledContent": "Recycled Content"
+    },
+    "compliance": {
+        "status": "Verification Status",
+        "socialAudit": "Social Audit Status"
     }
 }

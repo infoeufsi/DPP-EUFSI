@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-    console.log('🌱 Seeding database with realistic use case...');
+    console.log('🌱 Seeding database with full regulatory use case...');
 
     // 1. Create Main Economic Operator (EU Brand)
     const brandOperator = await prisma.economicOperator.upsert({
@@ -96,50 +96,66 @@ async function main() {
         }
     });
 
-    // 6. Create Digital Product Passport (DPP)
+    // 6. Create Digital Product Passport (DPP) with Advanced ESG Data
     const dppData = {
         "@context": ["https://schema.org/", "https://w3id.org/dpp"],
         "type": "DigitalProductPassport",
         "productName": "Premium Organic Cotton T-Shirt",
         "gtin": "08712345678901",
         "batchNumber": "BATCH-2024-IN-001",
+        "product": {
+            "gtin": "08712345678901",
+            "name": "Premium Organic Cotton T-Shirt",
+            "description": "Environmentally friendly, 100% organic cotton t-shirt. Breathable, durable, and fully traceable from field to closet.",
+            "image": "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800",
+            "batch": "BATCH-2024-IN-001"
+        },
         "manufacturer": {
             "name": "Indo-Cotton Mills Ltd.",
             "location": "Tirupur, India",
             "certification": "GOTS Certified"
         },
+        "materialComposition": [
+            { "material": "Organic Cotton", "percentage": 95, "origin": { "country": "India" }, "certifications": ["GOTS"] },
+            { "material": "Recycled Elastane", "percentage": 5, "origin": { "country": "India" }, "certifications": ["GRS"] }
+        ],
         "sustainability": {
-            "materialComposition": [
-                { "material": "Organic Cotton", "percentage": 100, "origin": "India" }
-            ],
-            "carbonFootprint": "2.4 kg CO2e",
-            "waterUsage": "150 liters",
-            "circularity": {
-                "recyclability": "High",
-                "recommendedDisposal": "Textile recycling bin",
-                "repairability": "Ease of repair: 8/10"
-            }
+            "carbonFootprint": "2.1 kg CO2e",
+            "waterUsage": "120 liters",
+            "recycledContent": "5%",
+            "hazardousSubstances": "None (REACH Compliant)"
         },
-        "supplyChain": [
-            { "stage": "Farming", "location": "Gujarat, India", "actor": "Maharashtra Cotton Co-op" },
-            { "stage": "Spinning", "location": "Coimbatore, India", "actor": "Indo-Cotton Mills" },
-            { "stage": "Dyeing", "location": "Tirupur, India", "actor": "EcoDye India Ltd" },
-            { "stage": "Assembly", "location": "Tirupur, India", "actor": "Indo-Cotton Mills" }
+        "journey": [
+            { "stage": "Farming", "facility": { "name": "Co-op Farm", "location": { "country": "India" } }, "process": { "type": "Organic Farming" } },
+            { "stage": "Spinning", "facility": { "name": "Mill-A Coimbatore", "location": { "country": "India" } }, "process": { "type": "Spinning" } },
+            { "stage": "Dyeing", "facility": { "name": "EcoDye Tirupur", "location": { "country": "India" } }, "process": { "type": "Low-Impact Dyeing" } },
+            { "stage": "Assembly", "facility": { "name": "Indo-Cotton Fact.", "location": { "country": "India" } }, "process": { "type": "Final Assembly" } }
         ],
         "compliance": {
-            "espr": "Compliant",
-            "reach": "Compliant",
-            "oeKO_TEX": "Standard 100 Verified"
+            "espr": "Compliant (2027 Ready)",
+            "reach": "Certified",
+            "oeKO_TEX": "Standard 100 Verified",
+            "socialAudit": "SA8000 Certified (Audit June 2023)"
+        },
+        "endOfLife": {
+            "recyclability": { "recyclable": true, "recyclabilityScore": 9, "process": "Mechanical Textile Recycling" },
+            "collectionScheme": { "available": true, "instructions": "Standard textile recycling bin or brand take-back program." }
+        },
+        "usePhase": {
+            "careInstructions": [
+                { "icon": "wash", "description": "Machine wash cold" },
+                { "icon": "iron", "description": "Iron low heat" }
+            ]
         }
     };
 
     await prisma.digitalProductPassport.upsert({
         where: { dppId: 'DPP-08712345678901-2024IN001' },
-        update: {},
+        update: { data: dppData as any },
         create: {
             dppId: 'DPP-08712345678901-2024IN001',
-            version: '1.0',
-            data: dppData,
+            version: '1.2',
+            data: dppData as any,
             productId: product.id,
             batchId: batch.id,
             operatorId: indiaOperator.id,
@@ -151,9 +167,6 @@ async function main() {
     console.log('--- Credentials ---');
     console.log('Admin: admin@eufsi.eu / admin123');
     console.log('Supplier: supplier@weave.nl / supplier123');
-    console.log('--- Sample Data ---');
-    console.log('Product GTIN: 08712345678901');
-    console.log('Batch: BATCH-2024-IN-001');
 }
 
 main()
