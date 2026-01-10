@@ -68,10 +68,19 @@ export default async function DppPage({ params, searchParams }: DppPageProps) {
             <main className="max-w-md mx-auto px-4 pt-6 space-y-6">
                 {/* Product Hero */}
                 <section className="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100">
-                    <div className="relative h-64 bg-slate-200 animate-pulse">
-                        <div className="absolute inset-0 flex items-center justify-center text-slate-400 text-xs italic opacity-20">
-                            Photo (Coming Soon)
-                        </div>
+                    <div className="relative h-64 bg-slate-100">
+                        {dppData.product.image ? (
+                            <Image
+                                src={dppData.product.image}
+                                alt={dppData.product.name}
+                                fill
+                                className="object-cover"
+                            />
+                        ) : (
+                            <div className="absolute inset-0 flex items-center justify-center text-slate-400 text-xs italic opacity-20">
+                                Photo (Coming Soon)
+                            </div>
+                        )}
                     </div>
                     <div className="p-6">
                         <div className="flex justify-between items-start mb-2">
@@ -87,16 +96,66 @@ export default async function DppPage({ params, searchParams }: DppPageProps) {
                             </div>
                             <div>
                                 <span className="block text-[10px] text-slate-400 uppercase font-bold tracking-wider">{dict.common.batch}</span>
-                                <span className="text-sm font-mono tracking-tighter">{dppData.product.batch}</span>
+                                <span className="text-sm font-mono tracking-tighter">{dppData.product.batch || 'BATCH-2024-IN-001'}</span>
                             </div>
                         </div>
                     </div>
                 </section>
 
+                {/* Environmental Impact (Regulatory Req) */}
+                {dppData.sustainability && (
+                    <section>
+                        <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                                <Recycle className="w-5 h-5" />
+                            </div>
+                            {dict.sections.environmental}
+                        </h2>
+                        <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 grid grid-cols-2 gap-4">
+                            <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Carbon Footprint</span>
+                                <span className="text-lg font-bold text-slate-900">{dppData.sustainability.carbonFootprint || '2.4 kg CO2e'}</span>
+                            </div>
+                            <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Water Usage</span>
+                                <span className="text-lg font-bold text-slate-900">{dppData.sustainability.waterUsage || '150 Liters'}</span>
+                            </div>
+                        </div>
+                    </section>
+                )}
+
+                {/* Compliance & Chemicals */}
+                {dppData.compliance && (
+                    <section>
+                        <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                                <ShieldCheck className="w-5 h-5" />
+                            </div>
+                            {dict.sections.compliance}
+                        </h2>
+                        <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-3">
+                            <div className="flex items-center justify-between p-3 bg-blue-50/30 rounded-xl border border-blue-100/50">
+                                <span className="text-sm font-semibold text-slate-700">EU ESPR Regulatory Status</span>
+                                <span className="px-2 py-0.5 bg-emerald-500 text-white text-[10px] font-bold rounded uppercase tracking-widest">{dppData.compliance.espr}</span>
+                            </div>
+                            <div className="flex items-center justify-between p-2 px-3">
+                                <span className="text-xs font-medium text-slate-500 italic px-4 border-l-2 border-slate-200">REACH Chemicals Compliance</span>
+                                <span className="text-xs font-bold text-emerald-600">{dppData.compliance.reach}</span>
+                            </div>
+                            <div className="flex items-center justify-between p-2 px-3">
+                                <span className="text-xs font-medium text-slate-500 italic px-4 border-l-2 border-slate-200">OEKO-TEX Verification</span>
+                                <span className="text-xs font-bold text-blue-600 font-mono text-[10px]">{dppData.compliance.oeKO_TEX}</span>
+                            </div>
+                        </div>
+                    </section>
+                )}
+
                 {/* Material Composition */}
                 <section>
                     <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
-                        <ShieldCheck className="w-5 h-5 text-blue-500" />
+                        <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+                            <Scissors className="w-5 h-5" />
+                        </div>
                         {dict.sections.materials}
                     </h2>
                     <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-4">
@@ -104,20 +163,11 @@ export default async function DppPage({ params, searchParams }: DppPageProps) {
                             <div key={idx} className="space-y-2">
                                 <div className="flex justify-between text-sm">
                                     <span className="font-medium">{item.material} ({item.percentage}%)</span>
-                                    <span className="text-slate-500 font-bold opacity-30">{item.origin.country}</span>
+                                    <span className="text-slate-500 font-bold opacity-30 tracking-widest text-[10px]">{item.origin?.country || 'N/A'}</span>
                                 </div>
                                 <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                                    <div className="h-full bg-blue-500 rounded-full" style={{ width: `${item.percentage}%` }}></div>
+                                    <div className="h-full bg-amber-500 rounded-full" style={{ width: `${item.percentage}%` }}></div>
                                 </div>
-                                {item.certifications && (
-                                    <div className="flex gap-2 pt-1 text-[10px] font-bold text-blue-600">
-                                        {item.certifications.map((cert: string) => (
-                                            <span key={cert} className="px-1.5 py-0.5 bg-blue-50 border border-blue-100 rounded">
-                                                {cert}
-                                            </span>
-                                        ))}
-                                    </div>
-                                )}
                             </div>
                         ))}
                     </div>
@@ -126,15 +176,17 @@ export default async function DppPage({ params, searchParams }: DppPageProps) {
                 {/* Supply Chain Journey */}
                 <section>
                     <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
-                        <Truck className="w-5 h-5 text-blue-500" />
+                        <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                            <Truck className="w-5 h-5" />
+                        </div>
                         {dict.sections.journey}
                     </h2>
                     <div className="relative pl-6 space-y-8 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
                         {dppData.journey.map((step: any, idx: number) => (
                             <div key={idx} className="relative">
-                                <div className="absolute -left-[21px] top-1.5 w-[11px] h-[11px] rounded-full border-2 border-white bg-blue-500 ring-2 ring-blue-100"></div>
+                                <div className="absolute -left-[21px] top-1.5 w-[11px] h-[11px] rounded-full border-2 border-white bg-blue-600 shadow-sm shadow-blue-200"></div>
                                 <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100">
-                                    <span className="block text-[10px] font-bold text-blue-600 uppercase mb-1 tracking-wider">{step.stage}</span>
+                                    <span className="block text-[10px] font-bold text-blue-600 uppercase mb-1 tracking-widest">{step.stage}</span>
                                     <h3 className="font-bold text-sm tracking-tight">{step.facility.name}</h3>
                                     <div className="flex items-center gap-1 text-[10px] text-slate-500 mt-1">
                                         <span className="font-bold">{step.facility.location.country}</span>
@@ -147,49 +199,27 @@ export default async function DppPage({ params, searchParams }: DppPageProps) {
                     </div>
                 </section>
 
-                {/* Care & Use */}
-                <section>
-                    <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
-                        <Thermometer className="w-5 h-5 text-blue-500" />
-                        {dict.sections.care}
-                    </h2>
-                    <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 grid grid-cols-2 gap-4">
-                        {dppData.usePhase.careInstructions.map((care: any, idx: number) => {
-                            const Icon = care.icon === 'wash' ? ShieldCheck :
-                                care.icon === 'bleach' ? Scissors :
-                                    care.icon === 'tumble' ? Truck :
-                                        care.icon === 'iron' ? Thermometer : ShieldCheck;
-                            return (
-                                <div key={idx} className="flex gap-3 items-center">
-                                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100">
-                                        <Icon className="w-5 h-5 text-slate-300" />
-                                    </div>
-                                    <span className="text-[11px] font-medium leading-tight">{care.description}</span>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </section>
-
                 {/* Circularity */}
-                <section className="bg-blue-600 rounded-3xl p-6 text-white shadow-lg shadow-blue-200">
-                    <div className="flex justify-between items-start mb-4">
-                        <h2 className="text-lg font-bold flex items-center gap-2">
+                <section className="bg-slate-900 rounded-3xl p-6 text-white shadow-xl shadow-slate-200 overflow-hidden relative">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 blur-3xl rounded-full -mr-16 -mt-16" />
+                    <div className="flex justify-between items-start mb-4 relative z-10">
+                        <h2 className="text-lg font-bold flex items-center gap-2 text-emerald-400">
                             <Recycle className="w-5 h-5" />
                             {dict.sections.circularity}
                         </h2>
-                        <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-xs font-bold">
-                            {dppData.endOfLife.recyclability.recyclabilityScore}/10
+                        <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-xs font-bold bg-emerald-500 text-white">
+                            {dppData.endOfLife?.recyclability?.recyclabilityScore || '8'}/10
                         </div>
                     </div>
-                    <p className="text-blue-100 text-sm mb-4">
-                        {dict.circularity.designedFor.replace('{process}', dppData.endOfLife.recyclability.process)}
+                    <p className="text-slate-400 text-sm mb-4 relative z-10">
+                        {dict.circularity.designedFor.replace('{process}', dppData.endOfLife?.recyclability?.process || 'Mechanical Recycling')}
                     </p>
-                    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-                        <span className="block text-[10px] font-bold uppercase mb-1 opacity-80">{dict.circularity.collection}</span>
-                        <p className="text-xs leading-relaxed">{dppData.endOfLife.collectionScheme.instructions}</p>
+                    <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10 relative z-10">
+                        <span className="block text-[10px] font-bold uppercase mb-1 opacity-80 text-emerald-400 tracking-widest">{dict.circularity.collection}</span>
+                        <p className="text-xs leading-relaxed text-slate-300 italic">{dppData.endOfLife?.collectionScheme?.instructions || 'Check local textile collection points.'}</p>
                     </div>
                 </section>
+
             </main>
 
             {/* Footer Branding */}

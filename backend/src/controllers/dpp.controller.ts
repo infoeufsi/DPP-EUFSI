@@ -56,7 +56,9 @@ export const getDpp = asyncHandler(async (req: Request, res: Response) => {
                 process: { type: j.process?.type }
             })),
             usePhase: dpp.usePhase,
-            endOfLife: dpp.endOfLife
+            endOfLife: dpp.endOfLife,
+            sustainability: dpp.sustainability,
+            compliance: dpp.compliance
         };
     }
 

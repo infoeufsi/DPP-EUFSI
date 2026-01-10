@@ -11,6 +11,8 @@
     "sections": {
         "materials": "Materials & Origin",
         "journey": "Product Journey",
+        "environmental": "Environmental Impact",
+        "compliance": "Regulatory Compliance",
         "care": "Care Instructions",
         "circularity": "Circular Economy"
     },
