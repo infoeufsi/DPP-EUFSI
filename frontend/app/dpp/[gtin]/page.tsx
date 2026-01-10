@@ -36,19 +36,10 @@ export default async function DppPage({ params, searchParams }: DppPageProps) {
         error = err.message;
     }
 
-    // Fetch QR code
-    let qrData = null;
-    try {
-        const qrRes = await fetch(`${backendUrl}/api/v1/qr/generate/${gtin}?batch=${batch || ''}`, {
-            headers: { 'Accept': 'application/json' },
-            cache: 'no-store'
-        });
-        if (qrRes.ok) {
-            qrData = await qrRes.json();
-        }
-    } catch (e) {
-        console.error('Failed to fetch QR');
-    }
+    // Build direct QR URL (much more reliable)
+    const qrImageUrl = `${backendUrl}/api/v1/qr/generate/${gtin}?batch=${batch || ''}`;
+    // Build deterministic digital link text
+    const digitalLink = `${backendUrl.replace('/api/v1', '')}/resolve/${gtin}${batch ? `?batch=${batch}` : ''}`;
 
     if (error || !dppData) {
         return (
@@ -62,6 +53,9 @@ export default async function DppPage({ params, searchParams }: DppPageProps) {
             </div>
         );
     }
+
+    // Fallback image if DB is empty
+    const productPic = dppData.product.image || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800';
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-20">
@@ -80,18 +74,13 @@ export default async function DppPage({ params, searchParams }: DppPageProps) {
                 {/* Product Hero */}
                 <section className="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100">
                     <div className="relative h-64 bg-slate-100">
-                        {dppData.product.image ? (
-                            <Image
-                                src={dppData.product.image}
-                                alt={dppData.product.name}
-                                fill
-                                className="object-cover"
-                            />
-                        ) : (
-                            <div className="absolute inset-0 flex items-center justify-center text-slate-400 text-xs italic opacity-20">
-                                Photo (Coming Soon)
-                            </div>
-                        )}
+                        <Image
+                            src={productPic}
+                            alt={dppData.product.name}
+                            fill
+                            className="object-cover"
+                            unoptimized={true} // Bypasses potential image optimization issues on Render
+                        />
                     </div>
                     <div className="p-6">
                         <div className="flex justify-between items-start mb-2">
@@ -254,23 +243,19 @@ export default async function DppPage({ params, searchParams }: DppPageProps) {
                 <section className="text-center pt-8 border-t border-slate-200">
                     <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6">{dict.sections.digitalIdentity}</h2>
                     <div className="bg-white p-8 rounded-[40px] shadow-2xl shadow-blue-200 inline-block border border-slate-100">
-                        {qrData ? (
+                        <div className="relative w-[180px] h-[180px] mx-auto">
                             <Image
-                                src={qrData.qrCode}
+                                src={qrImageUrl}
                                 alt="QR Digital Link"
-                                width={180}
-                                height={180}
-                                className="mx-auto"
+                                fill
+                                className="object-contain"
+                                unoptimized={true}
                             />
-                        ) : (
-                            <div className="w-[180px] h-[180px] bg-slate-50 flex items-center justify-center rounded-2xl italic text-slate-300 text-xs">
-                                Generating ID...
-                            </div>
-                        )}
+                        </div>
                         <div className="mt-6 space-y-1">
                             <p className="text-[10px] font-bold text-blue-600 tracking-[0.2em] uppercase">GS1 Digital Link</p>
                             <p className="text-[9px] text-slate-400 font-mono lowercase truncate max-w-[150px] mx-auto">
-                                {qrData?.url || 'https://eufsi.eu/resolve/...'}
+                                {digitalLink}
                             </p>
                         </div>
                     </div>
