@@ -106,7 +106,7 @@ export default function LoginPage() {
 
                     <div className="mt-8 pt-6 border-t border-slate-100 text-center">
                         <p className="text-xs text-slate-400">
-                            Need an account? <span className="text-blue-600 font-bold cursor-help">Contact your Brand Admin</span>
+                            Need an account? <Link href="/portal/register" className="text-blue-600 font-bold">Register here</Link>
                         </p>
                     </div>
                 </div>
