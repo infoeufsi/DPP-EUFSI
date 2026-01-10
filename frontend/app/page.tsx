@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, LayoutDashboard, Search, ShieldCheck, Globe, Database } from 'lucide-react';
 
 export default function LandingPage() {
@@ -14,12 +15,16 @@ export default function LandingPage() {
         {/* Navigation */}
         <nav className="flex items-center justify-between px-6 py-6 mx-auto max-w-7xl lg:px-8">
           <div className="flex items-center gap-2">
-            <div className="flex items-center justify-center w-10 h-10 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-200">
-              <ShieldCheck className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-slate-900">
-              EUFSI <span className="text-indigo-600">DPP</span>
-            </span>
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src="/logo.png"
+                alt="EUFSI Logo"
+                width={200}
+                height={50}
+                className="h-10 w-auto object-contain"
+                priority
+              />
+            </Link>
           </div>
           <div className="hidden gap-8 md:flex">
             <Link href="/portal/login" className="text-sm font-semibold leading-6 text-slate-600 hover:text-indigo-600 transition-colors">Supplier Portal</Link>
@@ -113,8 +118,14 @@ export default function LandingPage() {
           <div className="px-6 py-12 mx-auto max-w-7xl lg:px-8">
             <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-indigo-600" />
-                <span className="text-sm font-semibold text-slate-900">EUFSI DPP Tool v1.0</span>
+                <Image
+                  src="/logo.png"
+                  alt="EUFSI Logo"
+                  width={150}
+                  height={38}
+                  className="h-8 w-auto object-contain grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all"
+                />
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-2">v1.0</span>
               </div>
               <p className="text-sm text-slate-500">
                 &copy; {new Date().getFullYear()} EUFSI. Designed for a circular economy.

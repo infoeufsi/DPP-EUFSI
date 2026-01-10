@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Lock, Mail, User, ShieldCheck, Building } from 'lucide-react';
 import Link from 'next/link';
@@ -63,12 +64,17 @@ export default function RegisterPage() {
         <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 py-12">
             <div className="max-w-md w-full">
                 {/* Branding */}
-                <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-600 rounded-xl mb-4 shadow-lg shadow-blue-200">
-                        <ShieldCheck className="w-6 h-6 text-white" />
+                <div className="text-center mb-0 flex flex-col items-center">
+                    <div className="inline-flex items-center justify-center p-4 bg-white rounded-2xl mb-2">
+                        <Image
+                            src="/logo.png"
+                            alt="EUFSI Logo"
+                            width={220}
+                            height={55}
+                            className="h-12 w-auto object-contain"
+                            priority
+                        />
                     </div>
-                    <h1 className="text-2xl font-bold text-slate-900">Join EUFSI DPP</h1>
-                    <p className="text-slate-500 text-sm mt-1">Supplier Onboarding</p>
                 </div>
 
                 {/* Register Card */}
